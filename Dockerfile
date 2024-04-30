@@ -6,6 +6,6 @@ RUN mvn -f /app/pom.xml clean package -DskipTests
 
 # Run stage
 FROM openjdk:17-alpine
-EXPOSE 8581
+EXPOSE 8080
 COPY --from=build /app/target/*.jar /app/app.jar
 ENTRYPOINT ["java", "-jar","/app/app.jar"]
