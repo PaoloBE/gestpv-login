@@ -1,6 +1,7 @@
 # Build stage
 FROM maven:3.8.7-eclipse-temurin-17-alpine AS build
 COPY . /app/
+COPY Dockerfile /
 RUN mvn -f /app/pom.xml clean package -DskipTests
 
 # Run stage
