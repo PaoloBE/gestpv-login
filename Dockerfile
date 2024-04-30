@@ -8,5 +8,6 @@ RUN mvn -f /app/pom.xml clean package -DskipTests
 # Run stage
 FROM openjdk:17-alpine
 EXPOSE 8581
+COPY --from=build /app/Dockerfile Dockerfile
 COPY --from=build /app/target/*.jar /app/app.jar
 ENTRYPOINT ["java", "-jar","/app/app.jar"]
