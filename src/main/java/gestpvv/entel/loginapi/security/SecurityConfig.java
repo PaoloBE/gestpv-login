@@ -1,4 +1,4 @@
-package security;
+package gestpvv.entel.loginapi.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
