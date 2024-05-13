@@ -2,14 +2,14 @@ package gestpvv.entel.loginapi.controller;
 
 import gestpvv.entel.loginapi.entity.Role;
 import gestpvv.entel.loginapi.entity.User;
-import gestpvv.entel.loginapi.payload.LoginDto;
+import gestpvv.entel.loginapi.payload.model.LoginDto;
 import gestpvv.entel.loginapi.payload.SignUpDto;
 import gestpvv.entel.loginapi.repository.RoleRepository;
 import gestpvv.entel.loginapi.repository.UserRepository;
+import gestpvv.entel.loginapi.security.CustomAuthenticationManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +26,7 @@ import java.util.Collections;
 public class AuthController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private CustomAuthenticationManager authenticationManager;
 
     @Autowired
     private UserRepository userRepository;
@@ -38,15 +38,15 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
+    public ResponseEntity<Authentication> authenticateUser(@RequestBody LoginDto loginDto){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getDocumentNumberOrEmail(), loginDto.getPass()));
+                loginDto.getDocument(), loginDto.getPass()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
+        return new ResponseEntity<>(authentication, HttpStatus.OK);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto){
 
         // add check for username exists in a DB

@@ -32,6 +32,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CustomAuthenticationManager customAuthenticationProvider() {
+        return new CustomAuthenticationManager();
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
