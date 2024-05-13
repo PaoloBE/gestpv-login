@@ -2,12 +2,14 @@ package gestpvv.entel.loginapi.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
 
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "persona_cliente", schema = "Admin")
 public class PersonaCliente {
