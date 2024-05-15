@@ -1,6 +1,7 @@
 package gestpvv.entel.loginapi.repository;
 
 import gestpvv.entel.loginapi.entity.*;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,6 +32,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findById(@Param("id") Integer id);
 
     @Modifying(flushAutomatically = true)
+    @Transactional
     @Query("update Usuario u set u.usuarioEstado = :estado where u.idUsuario= :id")
     void updateUserState(Integer id, String estado);
 
