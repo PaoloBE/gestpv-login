@@ -2,6 +2,7 @@ package gestpvv.entel.loginapi.repository;
 
 import gestpvv.entel.loginapi.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -28,5 +29,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     @Query("SELECT u FROM Usuario u WHERE idUsuario = :id")
     Optional<Usuario> findById(@Param("id") Integer id);
+
+    @Modifying(flushAutomatically = true)
+    @Query("update Usuario u set u.usuarioEstado = :estado where u.idUsuario= :id")
+    void updateUserState(Integer id, String estado);
 
 }

@@ -138,4 +138,11 @@ public class UsuarioController {
             return new UsuarioDTO();
         }
     }
+
+    @GetMapping("/update/state/{id}/{estado}")
+    public String updateState(@PathVariable Integer id, @PathVariable String estado) {
+        String cambio = estado.equalsIgnoreCase("1") ? "0" : "1";
+        usuarioRepository.updateUserState(id,cambio);
+        return "exito";
+    }
 }
