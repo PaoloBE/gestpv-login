@@ -2,9 +2,11 @@ package gestpvv.entel.loginapi.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "email", schema = "Admin")
 public class Email {

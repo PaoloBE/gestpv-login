@@ -1,6 +1,8 @@
 package gestpvv.entel.loginapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,10 +11,15 @@ import java.util.Set;
 
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "persona_cliente", schema = "Admin")
 public class PersonaCliente {
+
+    public PersonaCliente(){
+
+    }
 
     public PersonaCliente(String nom, String apeP, String apeM, String naci, Integer estado){
         this.personaNombres = nom;

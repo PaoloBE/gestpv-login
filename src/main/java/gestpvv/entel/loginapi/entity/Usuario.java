@@ -24,6 +24,17 @@ public class Usuario {
         this.usuarioFechaModifica = OffsetDateTime.now();
     }
 
+    public Usuario(Integer id, String desc, String estado, PersonaCliente persona, TipoPermiso permiso, TipoUsuario usuario){
+        this.idUsuario = id;
+        this.usuarioDesc = desc;
+        this.usuarioEstado = estado;
+        this.idpersonaCliente = persona;
+        this.idtipoPermiso = permiso;
+        this.idtipoUsuario = usuario;
+        this.usuarioFechaCreacion = OffsetDateTime.now();
+        this.usuarioFechaModifica = OffsetDateTime.now();
+    }
+
     @Id
     @Column(nullable = false, updatable = false,name = "id_Usuario")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
