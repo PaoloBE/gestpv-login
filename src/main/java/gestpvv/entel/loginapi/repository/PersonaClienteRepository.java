@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PersonaClienteRepository extends JpaRepository<PersonaCliente, Long> {
@@ -17,6 +18,9 @@ public interface PersonaClienteRepository extends JpaRepository<PersonaCliente, 
 
     @Query("SELECT t FROM TipoDocumentoIdentidad t where idTipoDocumento = :id")
     TipoDocumentoIdentidad findTipoDocById(@Param("id") Integer id);
+
+    @Query("SELECT t FROM TipoDocumentoIdentidad t WHERE tipoDocumentoEstado = '1'")
+    List<TipoDocumentoIdentidad> findTiposAct();
 
     @Query("SELECT t FROM TipoTelefono t where idTipoTelefono = :id")
     TipoTelefono findTipoTelById(@Param("id") Integer id);
