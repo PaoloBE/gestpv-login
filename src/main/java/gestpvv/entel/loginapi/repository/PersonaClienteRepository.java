@@ -20,7 +20,10 @@ public interface PersonaClienteRepository extends JpaRepository<PersonaCliente, 
     TipoDocumentoIdentidad findTipoDocById(@Param("id") Integer id);
 
     @Query("SELECT t FROM TipoDocumentoIdentidad t WHERE tipoDocumentoEstado = '1'")
-    List<TipoDocumentoIdentidad> findTiposAct();
+    List<TipoDocumentoIdentidad> findTiposDocsAct();
+
+    @Query("SELECT t FROM TipoUsuario t WHERE tipoUsuarioEstado = 1")
+    List<TipoUsuario> findTiposUsuarioAct();
 
     @Query("SELECT t FROM TipoTelefono t where idTipoTelefono = :id")
     TipoTelefono findTipoTelById(@Param("id") Integer id);
