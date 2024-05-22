@@ -11,13 +11,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "email", schema = "Admin")
 public class Email {
 
-    public Email(String desc, Integer estado) {
+    public Email(String desc, Integer estado, PersonaCliente personaCliente) {
         this.emailDesc = desc;
         this.emailEstado = estado;
+        this.personaClienteIdpersonaCliente = personaCliente;
     }
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "id_email")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idemail;
 
@@ -28,7 +29,7 @@ public class Email {
     private String emailDesc;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "persona_cliente_idpersona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
+    @JoinColumn(name = "id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
     private PersonaCliente personaClienteIdpersonaCliente;
 
 }

@@ -12,4 +12,7 @@ import java.util.List;
 public class TiposAuxDTO {
     private List<TipoDTO> tiposDoc;
     private List<TipoDTO> tiposUsr;
+    private List<TipoDTO> tiposPer;
+    private List<TipoDTO> tiposTel;
+    private List<TipoDTO> tiposGes;
 }

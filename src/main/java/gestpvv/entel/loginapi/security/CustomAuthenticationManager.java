@@ -3,7 +3,6 @@ package gestpvv.entel.loginapi.security;
 import gestpvv.entel.loginapi.entity.*;
 import gestpvv.entel.loginapi.payload.model.Document;
 import gestpvv.entel.loginapi.repository.PersonaClienteRepository;
-import gestpvv.entel.loginapi.repository.UserRepository;
 import gestpvv.entel.loginapi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,8 +18,6 @@ import java.util.Optional;
 
 
 public class CustomAuthenticationManager implements AuthenticationManager {
-    @Autowired
-    UserRepository userRepository;
     @Autowired
     PersonaClienteRepository personaClienteRepository;
     @Autowired

@@ -19,16 +19,22 @@ public interface PersonaClienteRepository extends JpaRepository<PersonaCliente, 
     @Query("SELECT t FROM TipoDocumentoIdentidad t where idTipoDocumento = :id")
     TipoDocumentoIdentidad findTipoDocById(@Param("id") Integer id);
 
-    @Query("SELECT t FROM TipoDocumentoIdentidad t WHERE tipoDocumentoEstado = '1'")
-    List<TipoDocumentoIdentidad> findTiposDocsAct();
+    @Query("SELECT t FROM TipoDocumentoIdentidad t where tipoDocumentoDesc = :desc")
+    TipoDocumentoIdentidad findTipoDocByDesc(@Param("desc") String desc);
 
-    @Query("SELECT t FROM TipoUsuario t WHERE tipoUsuarioEstado = 1")
-    List<TipoUsuario> findTiposUsuarioAct();
+    @Query("SELECT t FROM TipoTelefono t where tipoTelefonoDesc = :desc")
+    TipoTelefono findTipoTelByDesc(@Param("desc") String desc);
 
     @Query("SELECT t FROM TipoTelefono t where idTipoTelefono = :id")
     TipoTelefono findTipoTelById(@Param("id") Integer id);
 
-    @Query("SELECT t FROM Documento t where t.personaCliente.idPersonaCliente = :id AND documentoEstado = 1")
+    @Query("SELECT t FROM TipoTelefono t where tipoTelefonoEstado = 1")
+    List<TipoTelefono> findTipoTelAct();
+
+    @Query("SELECT t FROM TipoGestor t where tipoGestorEstado = 1")
+    List<TipoGestor> findTipoGestAct();
+
+    @Query("SELECT t FROM Documento t where t.personaCliente.idPersonaCliente = :id AND documentoEstado = 1 AND t.documentoTipoDocumento.tipoDocumentoDesc != 'RUC'")
     Documento findDocByPersonaIdAct(@Param("id") Integer id);
 
     @Query("SELECT t FROM Telefono t where t.idpersonaCliente.idPersonaCliente = :id AND telefonoEstado = 1")

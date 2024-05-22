@@ -11,14 +11,15 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "documento", schema = "Admin")
-public class Documento {
+public class  Documento {
 
-    public Documento(String desc, Integer estado, TipoDocumentoIdentidad tipo){
+    public Documento(String desc, Integer estado, TipoDocumentoIdentidad tipo, PersonaCliente persona){
         this.documentoDesc = desc;
         this.documentoEstado = estado;
         this.documentoFechaCreacion = OffsetDateTime.now();
         this.documentoFechaModifica = OffsetDateTime.now();
         this.documentoTipoDocumento = tipo;
+        this.personaCliente = persona;
     }
 
     @Id

@@ -51,9 +51,6 @@ public class PersonaCliente {
     @Column(length = 45, name = "persona_razon_social")
     private String personaRazonSocial;
 
-    @Column(length = 45, name = "persona_tipo_punto_venta")
-    private String personaTipoPuntoVenta;
-
     @Column(name = "persona_estado")
     private Integer personaEstado;
 
@@ -81,4 +78,18 @@ public class PersonaCliente {
     @OneToMany(mappedBy = "idpersonaCliente")
     private Set<Usuario> idpersonaClienteUsuarios;
 
+    @OneToMany(mappedBy = "personaCliente")
+    private Set<Banco> bancos;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_persona", referencedColumnName = "id_tipo_persona")
+    private TipoPersona tipoPersona;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_punto_venta", referencedColumnName = "id_tipo_punto_venta")
+    private TipoPuntoVenta tipoPuntoVenta;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_gestor", referencedColumnName = "id_tipo_gestor")
+    private TipoGestor tipoGestorPersona;
 }

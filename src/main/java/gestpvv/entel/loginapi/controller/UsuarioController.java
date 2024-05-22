@@ -5,14 +5,18 @@ import gestpvv.entel.loginapi.payload.DTO.PersonaDTO;
 import gestpvv.entel.loginapi.payload.DTO.SubTipoDTO;
 import gestpvv.entel.loginapi.payload.DTO.TipoDTO;
 import gestpvv.entel.loginapi.payload.DTO.UsuarioDTO;
+import gestpvv.entel.loginapi.payload.model.DireccionReq;
+import gestpvv.entel.loginapi.payload.model.PersonaClienteDto;
 import gestpvv.entel.loginapi.repository.*;
 import gestpvv.entel.loginapi.payload.ResUsuarioRegister;
 import gestpvv.entel.loginapi.payload.ReqUsuarioRegister;
 import gestpvv.entel.loginapi.payload.ResUsuarioUpdate;
 import gestpvv.entel.loginapi.payload.ReqUsuarioUpdate;
+import gestpvv.entel.loginapi.util.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import gestpvv.entel.loginapi.enums.TipoUsuarioName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,32 +45,63 @@ public class UsuarioController {
     @Autowired
     private UCelularRepository uCelularRepository;
     @Autowired
+    private GestorRepository gestorRepository;
+    @Autowired
+    private UbigeoRepository ubigeoRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping
-    public ResUsuarioRegister registrarUsuario(ReqUsuarioRegister request) {
-
+    @PostMapping("/add")
+    public ResUsuarioRegister registrarUsuario(@RequestBody ReqUsuarioRegister request) throws Exception {
+        boolean gest = request.getTipo().equalsIgnoreCase("GEST");
+        boolean kam = request.getTipo().equalsIgnoreCase("KAM");
+        boolean pdv = request.getTipo().equalsIgnoreCase("PDV");
+        String nameU = TipoUsuarioName.valueOf(request.getTipoUsuario().getDesc()).getCode();
+        Optional<String> nameL = usuarioRepository.findLastOfTipoUsuario(request.getTipoUsuario().getDesc());
+        String nameF = "";
+        nameF = nameL.map(s -> nameU + String.format("%04d", Integer.parseInt(s.replaceAll("[^\\d.]", "")) + 1)).orElseGet(() -> nameU + "0001");
+        request.setUsuarioDesc(nameF);
+        System.out.println(JSONUtil.toJSON(request));
+        System.out.println(gest+" - "+kam+" - "+pdv);
         Optional<PersonaCliente> persona = personaClienteRepository.findbypersonaClienteDocumentoes(request.getPersonaCliente().getDoc().getDesc(), request.getPersonaCliente().getDoc().getDesc());
-        gestpvv.entel.loginapi.entity.PersonaCliente per;
-        gestpvv.entel.loginapi.payload.model.PersonaCliente perReq = request.getPersonaCliente();
+        PersonaCliente per;
+        PersonaClienteDto perReq = request.getPersonaCliente();
         if (persona.isPresent()) {
             per = persona.get();
         } else {
             per = new PersonaCliente(perReq.getNombres(), perReq.getPriApe(), perReq.getSecApe(), perReq.getNacimiento(),1);
+            if (gest) {
+                per.setTipoGestorPersona(gestorRepository.findByIdTipoGestor(perReq.getGest().getIdTipo()));
+            }
+            if (pdv) {
+                per.setPersonaRazonSocial(perReq.getRazSoc());
+            }
             per = personaClienteRepository.saveAndFlush(per);
-            direccionRepository.save(new Direccion(perReq.getDireccion(), 1, per));
-            emailRepository.save(new Email(perReq.getCorreo(), 1));
-            documentoRepository.save(new Documento(perReq.getDoc().getDesc(), 1, personaClienteRepository.findTipoDocById(perReq.getDoc().getIdTipo())));
-            telefonoRepository.save(new Telefono(perReq.getTel().getDesc(), 1, personaClienteRepository.findTipoTelById(perReq.getTel().getIdTipo())));
+            if (kam) {
+                direccionRepository.save(new Direccion(ubigeoRepository.findMainDep(perReq.getDireccion().getUbigeo().getConcat()), per));
+            }
+            if (pdv) {
+                DireccionReq dirReq = perReq.getDireccion();
+                String concat = dirReq.getUbigeo().getConcat();
+                direccionRepository.save(new Direccion(dirReq.getDesc(),dirReq.getRef(),
+                        "0",dirReq.getLat(),dirReq.getLon(),
+                        dirReq.getZona(),dirReq.getCity(),
+                        per, ubigeoRepository.findByDepProDist(concat.split("-")[0],concat.split("-")[1],concat.split("-")[2])));
+                documentoRepository.save(new Documento(perReq.getDocE().getDesc(), 1, personaClienteRepository.findTipoDocByDesc(perReq.getDocE().getTipo()), per));
+            }
+            emailRepository.save(new Email(perReq.getCorreo(), 1, per));
+            documentoRepository.save(new Documento(perReq.getDoc().getDesc(), 1, personaClienteRepository.findTipoDocByDesc(perReq.getDoc().getTipo()), per));
+            telefonoRepository.save(new Telefono(perReq.getTel(), 1, personaClienteRepository.findTipoTelByDesc("CELULAR TRABAJO"), per));
 
         }
         Optional<Usuario> usuario = usuarioRepository.findByIdpersonaClienteIdPersonaCliente(per.getIdPersonaCliente());
         if (usuario.isEmpty()) {
-            Usuario usu = usuarioRepository.saveAndFlush(new Usuario(request.getUsuarioDesc(),"1", per, usuarioRepository.findTipPerm(request.getTipoPermiso().getId()), usuarioRepository.findTipUsuario(request.getTipoUsuario().getId())));
+            String permiso = request.getTipoUsuario().getDesc().equalsIgnoreCase("ADMIN") ? "TOTAL" : "LECTURA" ;
+            Usuario usu = usuarioRepository.saveAndFlush(new Usuario(request.getUsuarioDesc(),"1", per, usuarioRepository.findTipPermDesc(permiso), usuarioRepository.findTipUsuario(request.getTipoUsuario().getId())));
             String contra = request.getPersonaCliente().getDoc().getDesc();
             uContraRepository.save(new UsuarioContrasena(contra, passwordEncoder.encode(contra), 1, usu));
             uCorreoRepository.save(new UsuarioCorreo(perReq.getCorreo(), 1, usu));
-            uCelularRepository.save(new UsuarioCelular(perReq.getTel().getDesc(), 1, usu));
+            uCelularRepository.save(new UsuarioCelular(perReq.getTel(), 1, usu));
             return new ResUsuarioRegister("EXITO", "");
         } else {
             return new ResUsuarioRegister("ERROR","ERU1 - Usuario ya existe");

@@ -13,12 +13,13 @@ import java.time.OffsetDateTime;
 @Table(name = "telefono", schema = "Admin")
 public class Telefono {
 
-    public Telefono(String desc, Integer estado, TipoTelefono tipo) {
+    public Telefono(String desc, Integer estado, TipoTelefono tipo, PersonaCliente persona) {
         this.telefonoDesc = desc;
         this.telefonoEstado = estado;
         this.telefonoFechaCreacion = OffsetDateTime.now();
         this.telefonoFechaModifica = OffsetDateTime.now();
         this.tipoTelefono = tipo;
+        this.idpersonaCliente = persona;
     }
 
     @Id

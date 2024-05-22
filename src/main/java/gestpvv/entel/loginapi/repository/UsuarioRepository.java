@@ -19,6 +19,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("SELECT tp FROM TipoPermiso tp WHERE idTipoPermiso = :id")
     TipoPermiso findTipPerm(@Param("id") Integer id);
 
+    @Query("SELECT tp FROM TipoPermiso tp WHERE tipoPermisoDesc = :desc")
+    TipoPermiso findTipPermDesc(@Param("desc") String desc);
+
     @Query("SELECT tp FROM TipoUsuario tp WHERE idTipoUsuario = :id")
     TipoUsuario findTipUsuario(@Param("id") Integer id);
 
@@ -36,4 +39,15 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("update Usuario u set u.usuarioEstado = :estado where u.idUsuario= :id")
     void updateUserState(Integer id, String estado);
 
+    @Query("SELECT t FROM TipoDocumentoIdentidad t WHERE tipoDocumentoEstado = '1'")
+    List<TipoDocumentoIdentidad> findTiposDocsAct();
+
+    @Query("SELECT t FROM TipoUsuario t WHERE tipoUsuarioEstado = 1")
+    List<TipoUsuario> findTiposUsuarioAct();
+
+    @Query("SELECT tp FROM TipoPermiso tp WHERE tipoPermisoEstado = 1")
+    List<TipoPermiso> findTipoPermAct();
+
+    @Query("SELECT u.usuarioDesc FROM Usuario u WHERE u.idtipoUsuario.tipoUsuarioDesc = :desc")
+    Optional<String> findLastOfTipoUsuario(@Param("desc") String desc);
 }
