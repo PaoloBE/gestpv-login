@@ -11,6 +11,17 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "banco", schema = "Admin")
 public class Banco {
+    public Banco(String bancoDesc, String bancoNumero, String bancoNumeroCCI, String bancoTipoCuenta, PersonaCliente personaCliente) {
+        this.bancoDesc = bancoDesc;
+        this.bancoEstado = 1;
+        this.bancoNumero = bancoNumero;
+        this.bancoNumeroCCI = bancoNumeroCCI;
+        this.bancoTipoCuenta = bancoTipoCuenta;
+        this.personaCliente = personaCliente;
+        this.bancoFechaCreacion = OffsetDateTime.now();
+        this.bancoFechaModifica = OffsetDateTime.now();
+    }
+
     @Id
     @Column(nullable = false, updatable = false, name = "id_banco")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

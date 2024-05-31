@@ -25,12 +25,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("SELECT tp FROM TipoUsuario tp WHERE idTipoUsuario = :id")
     TipoUsuario findTipUsuario(@Param("id") Integer id);
 
-    @Query("SELECT uc FROM UsuarioCelular uc WHERE uc.usuario.idUsuario = :id AND celularEstado = 1")
-    UsuarioCelular findCelAct(@Param("id") Integer id);
-
-    @Query("SELECT uc FROM UsuarioCorreo uc WHERE uc.usuario.idUsuario = :id AND correoEstado = 1")
-    UsuarioCorreo findCorreoAct(@Param("id") Integer id);
-
     @Query("SELECT u FROM Usuario u WHERE idUsuario = :id")
     Optional<Usuario> findById(@Param("id") Integer id);
 
@@ -50,4 +44,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     @Query("SELECT u.usuarioDesc FROM Usuario u WHERE u.idtipoUsuario.tipoUsuarioDesc = :desc")
     Optional<String> findLastOfTipoUsuario(@Param("desc") String desc);
+
+
 }

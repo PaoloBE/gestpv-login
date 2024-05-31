@@ -1,15 +1,16 @@
 package gestpvv.entel.loginapi.controller;
 
 import gestpvv.entel.loginapi.entity.*;
+import gestpvv.entel.loginapi.entity.UsuarioCelular;
+import gestpvv.entel.loginapi.entity.UsuarioCorreo;
 import gestpvv.entel.loginapi.payload.DTO.PersonaDTO;
 import gestpvv.entel.loginapi.payload.DTO.SubTipoDTO;
 import gestpvv.entel.loginapi.payload.DTO.TipoDTO;
 import gestpvv.entel.loginapi.payload.DTO.UsuarioDTO;
-import gestpvv.entel.loginapi.payload.model.DireccionReq;
-import gestpvv.entel.loginapi.payload.model.PersonaClienteDto;
+import gestpvv.entel.loginapi.payload.model.*;
 import gestpvv.entel.loginapi.repository.*;
 import gestpvv.entel.loginapi.payload.ResUsuarioRegister;
-import gestpvv.entel.loginapi.payload.ReqUsuarioRegister;
+import gestpvv.entel.loginapi.payload.DTO.UsuarioOperationDTO;
 import gestpvv.entel.loginapi.payload.ResUsuarioUpdate;
 import gestpvv.entel.loginapi.payload.ReqUsuarioUpdate;
 import gestpvv.entel.loginapi.util.JSONUtil;
@@ -29,7 +30,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
     @Autowired
-    private PersonaClienteRepository personaClienteRepository;
+    private PersonaClienteRepository personaRep;
     @Autowired
     private DireccionRepository direccionRepository;
     @Autowired
@@ -39,20 +40,22 @@ public class UsuarioController {
     @Autowired
     private TelefonoRepository telefonoRepository;
     @Autowired
-    private UContraRepository uContraRepository;
+    private UContraRepository uContraRep;
     @Autowired
-    private UCorreoRepository uCorreoRepository;
+    private UCorreoRepository uCorreoRep;
     @Autowired
-    private UCelularRepository uCelularRepository;
+    private UCelularRepository uCelulrRep;
     @Autowired
     private GestorRepository gestorRepository;
     @Autowired
     private UbigeoRepository ubigeoRepository;
     @Autowired
+    private BancoRepository bancoRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/add")
-    public ResUsuarioRegister registrarUsuario(@RequestBody ReqUsuarioRegister request) throws Exception {
+    public ResUsuarioRegister registrarUsuario(@RequestBody UsuarioOperationDTO request) throws Exception {
         boolean gest = request.getTipo().equalsIgnoreCase("GEST");
         boolean kam = request.getTipo().equalsIgnoreCase("KAM");
         boolean pdv = request.getTipo().equalsIgnoreCase("PDV");
@@ -63,7 +66,7 @@ public class UsuarioController {
         request.setUsuarioDesc(nameF);
         System.out.println(JSONUtil.toJSON(request));
         System.out.println(gest+" - "+kam+" - "+pdv);
-        Optional<PersonaCliente> persona = personaClienteRepository.findbypersonaClienteDocumentoes(request.getPersonaCliente().getDoc().getDesc(), request.getPersonaCliente().getDoc().getDesc());
+        Optional<PersonaCliente> persona = personaRep.findbypersonaClienteDocumentoes(request.getPersonaCliente().getDoc().getDesc(), request.getPersonaCliente().getDoc().getDesc());
         PersonaCliente per;
         PersonaClienteDto perReq = request.getPersonaCliente();
         if (persona.isPresent()) {
@@ -76,7 +79,7 @@ public class UsuarioController {
             if (pdv) {
                 per.setPersonaRazonSocial(perReq.getRazSoc());
             }
-            per = personaClienteRepository.saveAndFlush(per);
+            per = personaRep.saveAndFlush(per);
             if (kam) {
                 direccionRepository.save(new Direccion(ubigeoRepository.findMainDep(perReq.getDireccion().getUbigeo().getConcat()), per));
             }
@@ -87,21 +90,21 @@ public class UsuarioController {
                         "0",dirReq.getLat(),dirReq.getLon(),
                         dirReq.getZona(),dirReq.getCity(),
                         per, ubigeoRepository.findByDepProDist(concat.split("-")[0],concat.split("-")[1],concat.split("-")[2])));
-                documentoRepository.save(new Documento(perReq.getDocE().getDesc(), 1, personaClienteRepository.findTipoDocByDesc(perReq.getDocE().getTipo()), per));
+                documentoRepository.save(new Documento(perReq.getDocE().getDesc(), 1, personaRep.findTipoDocByDesc(perReq.getDocE().getTipo()), per));
             }
             emailRepository.save(new Email(perReq.getCorreo(), 1, per));
-            documentoRepository.save(new Documento(perReq.getDoc().getDesc(), 1, personaClienteRepository.findTipoDocByDesc(perReq.getDoc().getTipo()), per));
-            telefonoRepository.save(new Telefono(perReq.getTel(), 1, personaClienteRepository.findTipoTelByDesc("CELULAR TRABAJO"), per));
-
+            documentoRepository.save(new Documento(perReq.getDoc().getDesc(), 1, personaRep.findTipoDocByDesc(perReq.getDoc().getTipo()), per));
+            telefonoRepository.save(new Telefono(perReq.getTel(), 1, personaRep.findTipoTelByDesc("CELULAR TRABAJO"), per));
+            bancoRepository.save(new Banco(perReq.getBanco().getNombre(), perReq.getBanco().getCuenta(), perReq.getBanco().getCuentaCCI(), perReq.getBanco().getTipoCu(), per));
         }
         Optional<Usuario> usuario = usuarioRepository.findByIdpersonaClienteIdPersonaCliente(per.getIdPersonaCliente());
         if (usuario.isEmpty()) {
             String permiso = request.getTipoUsuario().getDesc().equalsIgnoreCase("ADMIN") ? "TOTAL" : "LECTURA" ;
             Usuario usu = usuarioRepository.saveAndFlush(new Usuario(request.getUsuarioDesc(),"1", per, usuarioRepository.findTipPermDesc(permiso), usuarioRepository.findTipUsuario(request.getTipoUsuario().getId())));
             String contra = request.getPersonaCliente().getDoc().getDesc();
-            uContraRepository.save(new UsuarioContrasena(contra, passwordEncoder.encode(contra), 1, usu));
-            uCorreoRepository.save(new UsuarioCorreo(perReq.getCorreo(), 1, usu));
-            uCelularRepository.save(new UsuarioCelular(perReq.getTel(), 1, usu));
+            uContraRep.save(new UsuarioContrasena(contra, passwordEncoder.encode(contra), 1, usu));
+            uCorreoRep.save(new UsuarioCorreo(perReq.getCorreo(), 1, usu));
+            uCelulrRep.save(new UsuarioCelular(perReq.getTel(), 1, usu));
             return new ResUsuarioRegister("EXITO", "");
         } else {
             return new ResUsuarioRegister("ERROR","ERU1 - Usuario ya existe");
@@ -120,9 +123,9 @@ public class UsuarioController {
             for (Usuario usuario : usuarios) {
                 UsuarioDTO usuarioR = new UsuarioDTO(usuario.getIdUsuario(), usuario.getUsuarioDesc(), usuario.getUsuarioEstado());
                 usuarioR.setTipoUsuario(new TipoDTO(usuario.getIdtipoUsuario().getIdTipoUsuario(), usuario.getIdtipoUsuario().getTipoUsuarioDesc()));
-                UsuarioCelular usuarioCelular = usuarioRepository.findCelAct(usuario.getIdUsuario());
+                UsuarioCelular usuarioCelular = uCelulrRep.findCelAct(usuario.getIdUsuario());
                 usuarioR.setCelular(new TipoDTO(usuarioCelular.getIdUsuarioCelular(), usuarioCelular.getCelularNumeroDesc()));
-                UsuarioCorreo usuarioCorreo = usuarioRepository.findCorreoAct(usuario.getIdUsuario());
+                UsuarioCorreo usuarioCorreo = uCorreoRep.findCorreoAct(usuario.getIdUsuario());
                 usuarioR.setCorreo(new TipoDTO(usuarioCorreo.getIdUsuarioCorreo(),usuarioCorreo.getCorreoDesc()));
                 PersonaCliente persona = usuario.getIdpersonaCliente();
                 PersonaDTO personaDTO = new PersonaDTO(persona.getIdPersonaCliente(),
@@ -130,7 +133,7 @@ public class UsuarioController {
                         persona.getPersonaPrimerApellido(),
                         persona.getPersonaSegundoApellido(),
                         persona.getPersonaNacimiento());
-                Documento documento = personaClienteRepository.findDocByPersonaIdAct(persona.getIdPersonaCliente());
+                Documento documento = personaRep.findDocByPersonaIdAct(persona.getIdPersonaCliente());
                 personaDTO.setDocumento(new SubTipoDTO(documento.getIdDocumento(), documento.getDocumentoDesc(), new TipoDTO(documento.getDocumentoTipoDocumento().getIdTipoDocumento(), documento.getDocumentoTipoDocumento().getTipoDocumentoDesc())));
                 usuarioR.setPersona(personaDTO);
                 usuarioDTOS.add(usuarioR);
@@ -143,34 +146,35 @@ public class UsuarioController {
     }
 
     @GetMapping("/list/{id}")
-    public UsuarioDTO listaUnUsuario(@PathVariable Integer id) {
+    public UsuarioOperationDTO listaUnUsuario(@PathVariable Integer id) {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
         if (usuario.isPresent()) {
-            UsuarioDTO usuarioR = new UsuarioDTO(usuario.get().getIdUsuario(), usuario.get().getUsuarioDesc(), usuario.get().getUsuarioEstado());
-            usuarioR.setTipoUsuario(new TipoDTO(usuario.get().getIdtipoUsuario().getIdTipoUsuario(), usuario.get().getIdtipoUsuario().getTipoUsuarioDesc()));
-            usuarioR.setPermiso(new TipoDTO(usuario.get().getIdtipoPermiso().getIdTipoPermiso(), usuario.get().getIdtipoPermiso().getTipoPermisoDesc()));
-            UsuarioCelular usuarioCelular = usuarioRepository.findCelAct(usuario.get().getIdUsuario());
-            usuarioR.setCelular(new TipoDTO(usuarioCelular.getIdUsuarioCelular(), usuarioCelular.getCelularNumeroDesc()));
-            UsuarioCorreo usuarioCorreo = usuarioRepository.findCorreoAct(usuario.get().getIdUsuario());
-            usuarioR.setCorreo(new TipoDTO(usuarioCorreo.getIdUsuarioCorreo(),usuarioCorreo.getCorreoDesc()));
-            PersonaCliente persona = usuario.get().getIdpersonaCliente();
-            PersonaDTO personaDTO = new PersonaDTO(persona.getIdPersonaCliente(),
-                    persona.getPersonaNombres(),
-                    persona.getPersonaPrimerApellido(),
-                    persona.getPersonaSegundoApellido(),
-                    persona.getPersonaNacimiento());
-            Email email = personaClienteRepository.findEmailByPersonaIdAct(persona.getIdPersonaCliente());
-            personaDTO.setEmail(new TipoDTO(email.getIdemail(), email.getEmailDesc()));
-            Direccion direccion = personaClienteRepository.findDireccionByPersonaIdAct(persona.getIdPersonaCliente());
-            personaDTO.setDireccion(new TipoDTO(direccion.getIdDireccion(), direccion.getDireccionDesc()));
-            Telefono telefono = personaClienteRepository.findTelByPersonaIdAct(persona.getIdPersonaCliente());
-            personaDTO.setTelefono(new SubTipoDTO(telefono.getIdTelefono(), telefono.getTelefonoDesc(), new TipoDTO(telefono.getTipoTelefono().getIdTipoTelefono(), telefono.getTipoTelefono().getTipoTelefonoDesc())));
-            Documento documento = personaClienteRepository.findDocByPersonaIdAct(persona.getIdPersonaCliente());
-            personaDTO.setDocumento(new SubTipoDTO(documento.getIdDocumento(), documento.getDocumentoDesc(), new TipoDTO(documento.getDocumentoTipoDocumento().getIdTipoDocumento(), documento.getDocumentoTipoDocumento().getTipoDocumentoDesc())));
-            usuarioR.setPersona(personaDTO);
-            return usuarioR;
+            TipoUsuario type = usuario.get().getIdtipoUsuario();
+            PersonaCliente personaCliente = usuario.get().getIdpersonaCliente();
+            String typeResp = type.getTipoUsuarioDesc().equalsIgnoreCase("Gestor") ? "GEST" : type.getTipoUsuarioDesc().equalsIgnoreCase("KAM") ? "KAM" : type.getTipoUsuarioDesc().contains("PDV") ? "PDV" : "NORMAL";
+            UsuarioOperationDTO usuarioUp = new UsuarioOperationDTO(typeResp, usuario.get().getUsuarioDesc(), new TipoUsuarioDTO(type.getIdTipoUsuario(), type.getTipoUsuarioDesc()));
+            PersonaClienteDto personaDto = new PersonaClienteDto(personaCliente.getPersonaNombres(), personaCliente.getPersonaPrimerApellido(), personaCliente.getPersonaSegundoApellido(), personaCliente.getPersonaNacimiento());
+            personaDto.setDoc(new Cont(personaRep.findDocByPersonaIdAct(personaCliente.getIdPersonaCliente())));
+            personaDto.setTel(personaRep.findTelDescByPersonaIdAct(personaCliente.getIdPersonaCliente()));
+            personaDto.setCorreo(personaRep.findEmailDescByPersonaIdAct(personaCliente.getIdPersonaCliente()));
+
+            if (typeResp.equalsIgnoreCase("GEST")){
+                personaDto.setGest(new Gest(gestorRepository.findGestorbyId(personaCliente.getIdPersonaCliente())));
+            }
+            if (typeResp.equalsIgnoreCase("KAM")){
+                personaDto.setDireccion(new DireccionReq(direccionRepository.findKAMDep(personaCliente.getIdPersonaCliente())));
+            }
+            if (typeResp.equalsIgnoreCase("PDV")) {
+                personaDto.setRazSoc(personaCliente.getPersonaRazonSocial());
+                personaDto.setDocE(new Cont(personaRep.findDocEmpByPersonaIdAct(personaCliente.getIdPersonaCliente())));
+                personaDto.setDireccion(new DireccionReq(direccionRepository.findDirPDV(personaCliente.getIdPersonaCliente())));
+                personaDto.setBanco(new BancoReq(personaRep.findBancById(personaCliente.getIdPersonaCliente())));
+            }
+            usuarioUp.setPersonaCliente(personaDto);
+
+            return usuarioUp;
         } else {
-            return new UsuarioDTO();
+            return new UsuarioOperationDTO();
         }
     }
 

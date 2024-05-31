@@ -62,7 +62,7 @@ public class Direccion {
     private OffsetDateTime direccionFechaModifica;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
+    @JoinColumn(name = "persona_cliente_id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
     private PersonaCliente personaCliente;
 
     @Column(name = "direccion_referencia")
@@ -84,7 +84,7 @@ public class Direccion {
     private String direccionCiudad;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_ubigeo", referencedColumnName = "id_ubigeo")
+    @JoinColumn(name = "ubigeo_id_ubigeo", referencedColumnName = "id_ubigeo")
     private Ubigeo ubigeo;
 
 }

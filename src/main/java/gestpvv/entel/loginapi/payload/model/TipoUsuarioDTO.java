@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UbigeoReq {
-    private String concat;
+public class TipoUsuarioDTO {
+    private Integer id;
+    private String desc;
 }

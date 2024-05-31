@@ -39,7 +39,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         //.requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards", "/user").authenticated()
-                        .requestMatchers("/api/**", "/admin/users/**","/aux/**","/admin/users").permitAll()
+                        .requestMatchers("/api/**", "/admin/users/**","/aux/**","/admin/users","/admin/retos","/admin/retos/**").permitAll()
                 );
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());

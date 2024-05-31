@@ -40,10 +40,10 @@ public class  Documento {
     private OffsetDateTime documentoFechaModifica;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
+    @JoinColumn(name = "persona_cliente_id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
     private PersonaCliente personaCliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "documento_tipo_documento", referencedColumnName = "id_tipo_documento", nullable = false)
+    @JoinColumn(name = "tipo_documento_id_tipo_documento", referencedColumnName = "id_tipo_documento", nullable = false)
     private TipoDocumentoIdentidad documentoTipoDocumento;
 }

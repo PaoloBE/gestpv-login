@@ -56,15 +56,15 @@ public class Usuario {
     private Set<Token> usuarioTokens;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
+    @JoinColumn(name = "persona_cliente_id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
     private PersonaCliente idpersonaCliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_permiso", referencedColumnName = "id_tipo_permiso", nullable = false)
+    @JoinColumn(name = "tipo_permiso_id_tipo_permiso", referencedColumnName = "id_tipo_permiso", nullable = false)
     private TipoPermiso idtipoPermiso;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_usuario", referencedColumnName = "id_tipo_usuario", nullable = false)
+    @JoinColumn(name = "tipo_usuario_id_tipo_usuario", referencedColumnName = "id_tipo_usuario", nullable = false)
     private TipoUsuario idtipoUsuario;
 
     @OneToMany(mappedBy = "usuario")

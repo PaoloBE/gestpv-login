@@ -1,6 +1,8 @@
 package gestpvv.entel.loginapi.repository;
 
 import gestpvv.entel.loginapi.entity.*;
+import gestpvv.entel.loginapi.payload.model.Gest;
+import gestpvv.entel.loginapi.repository.dtos.BancoJPA;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,18 +33,27 @@ public interface PersonaClienteRepository extends JpaRepository<PersonaCliente, 
     @Query("SELECT t FROM TipoTelefono t where tipoTelefonoEstado = 1")
     List<TipoTelefono> findTipoTelAct();
 
-    @Query("SELECT t FROM TipoGestor t where tipoGestorEstado = 1")
-    List<TipoGestor> findTipoGestAct();
-
     @Query("SELECT t FROM Documento t where t.personaCliente.idPersonaCliente = :id AND documentoEstado = 1 AND t.documentoTipoDocumento.tipoDocumentoDesc != 'RUC'")
     Documento findDocByPersonaIdAct(@Param("id") Integer id);
 
+    @Query("SELECT t FROM Documento t where t.personaCliente.idPersonaCliente = :id AND documentoEstado = 1 AND t.documentoTipoDocumento.tipoDocumentoDesc = 'RUC'")
+    Documento findDocEmpByPersonaIdAct(@Param("id") Integer id);
+
     @Query("SELECT t FROM Telefono t where t.idpersonaCliente.idPersonaCliente = :id AND telefonoEstado = 1")
     Telefono findTelByPersonaIdAct(@Param("id") Integer id);
+
+    @Query("SELECT t.telefonoDesc FROM Telefono t where t.idpersonaCliente.idPersonaCliente = :id AND telefonoEstado = 1")
+    String findTelDescByPersonaIdAct(@Param("id") Integer id);
 
     @Query("SELECT d FROM Direccion d where d.personaCliente.idPersonaCliente = :id AND direccionEstado = 1")
     Direccion findDireccionByPersonaIdAct(@Param("id") Integer id);
 
     @Query("SELECT d FROM Email d where d.personaClienteIdpersonaCliente.idPersonaCliente = :id AND emailEstado = 1")
     Email findEmailByPersonaIdAct(@Param("id") Integer id);
+
+    @Query("SELECT d.emailDesc FROM Email d where d.personaClienteIdpersonaCliente.idPersonaCliente = :id AND emailEstado = 1")
+    String findEmailDescByPersonaIdAct(@Param("id") Integer id);
+
+    @Query("SELECT b.bancoDesc AS desc, b.bancoNumero AS numero, b.bancoNumeroCCI AS numeroCCI, b.bancoTipoCuenta AS tipo FROM Banco b WHERE b.personaCliente.idPersonaCliente = :id")
+    BancoJPA findBancById(@Param("id") Integer id);
 }

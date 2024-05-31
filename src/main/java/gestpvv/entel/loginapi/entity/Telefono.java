@@ -40,11 +40,11 @@ public class Telefono {
     private OffsetDateTime telefonoFechaModifica;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idpersona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
+    @JoinColumn(name = "persona_cliente_id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
     private PersonaCliente idpersonaCliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_telefono", referencedColumnName = "id_tipo_telefono", nullable = false)
+    @JoinColumn(name = "tipo_telefono_id_tipo_telefono", referencedColumnName = "id_tipo_telefono", nullable = false)
     private TipoTelefono tipoTelefono;
 
 }

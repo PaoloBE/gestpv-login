@@ -82,14 +82,14 @@ public class PersonaCliente {
     private Set<Banco> bancos;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_persona", referencedColumnName = "id_tipo_persona")
+    @JoinColumn(name = "tipo_punto_venta_id_tipo_punto_venta", referencedColumnName = "id_tipo_persona")
     private TipoPersona tipoPersona;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_punto_venta", referencedColumnName = "id_tipo_punto_venta")
+    @JoinColumn(name = "tipo_persona_id_tipo_persona", referencedColumnName = "id_tipo_punto_venta")
     private TipoPuntoVenta tipoPuntoVenta;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_gestor", referencedColumnName = "id_tipo_gestor")
+    @JoinColumn(name = "tipo_gestor_id_tipo_gestor", referencedColumnName = "id_tipo_gestor")
     private TipoGestor tipoGestorPersona;
 }

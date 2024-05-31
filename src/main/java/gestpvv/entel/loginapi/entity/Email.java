@@ -29,7 +29,7 @@ public class Email {
     private String emailDesc;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
+    @JoinColumn(name = "persona_cliente_id_persona_cliente", referencedColumnName = "id_persona_cliente", nullable = false)
     private PersonaCliente personaClienteIdpersonaCliente;
 
 }

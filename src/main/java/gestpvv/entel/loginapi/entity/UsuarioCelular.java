@@ -39,6 +39,6 @@ public class UsuarioCelular {
     private OffsetDateTime celularFechaModifica;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario", nullable = false)
+    @JoinColumn(name = "usuario_id_usuario", referencedColumnName = "id_Usuario", nullable = false)
     private Usuario usuario;
 }

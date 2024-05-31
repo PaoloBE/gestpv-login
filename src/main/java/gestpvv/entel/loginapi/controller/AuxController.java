@@ -3,6 +3,7 @@ package gestpvv.entel.loginapi.controller;
 import gestpvv.entel.loginapi.payload.DTO.TipoDTO;
 import gestpvv.entel.loginapi.payload.DTO.TiposAuxDTO;
 import gestpvv.entel.loginapi.repository.DireccionRepository;
+import gestpvv.entel.loginapi.repository.GestorRepository;
 import gestpvv.entel.loginapi.repository.PersonaClienteRepository;
 import gestpvv.entel.loginapi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class AuxController {
 
     @Autowired
     private DireccionRepository direccionRepository;
+
+    @Autowired
+    private GestorRepository gestorRepository;
 
     @GetMapping("/loc/{type}/{subtype}")
     public List<String> listLocations(@PathVariable String type, @PathVariable String subtype){
@@ -64,7 +68,7 @@ public class AuxController {
             lTelf.add(new TipoDTO(t.getIdTipoTelefono(), t.getTipoTelefonoDesc()));
         });
         List<TipoDTO> lGest = new ArrayList<>();
-        personaClienteRepository.findTipoGestAct().forEach(t -> {
+        gestorRepository.findTipoGestAct().forEach(t -> {
             lGest.add(new TipoDTO(t.getIdTipoGestor(), t.getTipoGestorDesc()));
         });
         return new TiposAuxDTO(lDocs, lUsrs, lPerm, lTelf, lGest);
