@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "usuario", schema = "Admin")
 public class Usuario {
 
-    public Usuario(String desc, String estado, PersonaCliente persona, TipoPermiso permiso, TipoUsuario usuario){
+    public Usuario(String desc, String estado, String padres, PersonaCliente persona, TipoPermiso permiso, TipoUsuario usuario){
         this.usuarioDesc = desc;
         this.usuarioEstado = estado;
         this.idpersonaCliente = persona;
@@ -22,6 +22,7 @@ public class Usuario {
         this.idtipoUsuario = usuario;
         this.usuarioFechaCreacion = OffsetDateTime.now();
         this.usuarioFechaModifica = OffsetDateTime.now();
+        this.usuarioPadres = padres;
     }
 
     public Usuario(Integer id, String desc, String estado, PersonaCliente persona, TipoPermiso permiso, TipoUsuario usuario){
@@ -51,6 +52,9 @@ public class Usuario {
 
     @Column(name = "usuario_fecha_modifica")
     private OffsetDateTime usuarioFechaModifica;
+
+    @Column(name = "usuario_padres")
+    private String usuarioPadres;
 
     @OneToMany(mappedBy = "usuario")
     private Set<Token> usuarioTokens;

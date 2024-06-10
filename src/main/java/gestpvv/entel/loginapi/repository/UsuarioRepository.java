@@ -1,6 +1,7 @@
 package gestpvv.entel.loginapi.repository;
 
 import gestpvv.entel.loginapi.entity.*;
+import gestpvv.entel.loginapi.repository.dtos.UsuariosSuperDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -45,5 +46,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("SELECT u.usuarioDesc FROM Usuario u WHERE u.idtipoUsuario.tipoUsuarioDesc = :desc")
     Optional<String> findLastOfTipoUsuario(@Param("desc") String desc);
 
-
+    @Query("SELECT uc.usuario.idUsuario as idU, uc.celularNumeroDesc as doc, CONCAT(uc.usuario.idpersonaCliente.personaNombres,' ',uc.usuario.idpersonaCliente.personaPrimerApellido,' ',uc.usuario.idpersonaCliente.personaSegundoApellido) as nombre, uc.usuario.idtipoUsuario.tipoUsuarioDesc as tipo FROM UsuarioCelular uc WHERE uc.usuario.idtipoUsuario.tipoUsuarioDesc LIKE :desc")
+    List<UsuariosSuperDTO> findUsuariosByCriteria(@Param("desc") String desc);
 }

@@ -50,8 +50,6 @@ public class UsuarioController {
     @Autowired
     private UbigeoRepository ubigeoRepository;
     @Autowired
-    private BancoRepository bancoRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/add")
@@ -95,12 +93,11 @@ public class UsuarioController {
             emailRepository.save(new Email(perReq.getCorreo(), 1, per));
             documentoRepository.save(new Documento(perReq.getDoc().getDesc(), 1, personaRep.findTipoDocByDesc(perReq.getDoc().getTipo()), per));
             telefonoRepository.save(new Telefono(perReq.getTel(), 1, personaRep.findTipoTelByDesc("CELULAR TRABAJO"), per));
-            bancoRepository.save(new Banco(perReq.getBanco().getNombre(), perReq.getBanco().getCuenta(), perReq.getBanco().getCuentaCCI(), perReq.getBanco().getTipoCu(), per));
         }
         Optional<Usuario> usuario = usuarioRepository.findByIdpersonaClienteIdPersonaCliente(per.getIdPersonaCliente());
         if (usuario.isEmpty()) {
             String permiso = request.getTipoUsuario().getDesc().equalsIgnoreCase("ADMIN") ? "TOTAL" : "LECTURA" ;
-            Usuario usu = usuarioRepository.saveAndFlush(new Usuario(request.getUsuarioDesc(),"1", per, usuarioRepository.findTipPermDesc(permiso), usuarioRepository.findTipUsuario(request.getTipoUsuario().getId())));
+            Usuario usu = usuarioRepository.saveAndFlush(new Usuario(request.getUsuarioDesc(),"1", request.getPadres(), per, usuarioRepository.findTipPermDesc(permiso), usuarioRepository.findTipUsuario(request.getTipoUsuario().getId())));
             String contra = request.getPersonaCliente().getDoc().getDesc();
             uContraRep.save(new UsuarioContrasena(contra, passwordEncoder.encode(contra), 1, usu));
             uCorreoRep.save(new UsuarioCorreo(perReq.getCorreo(), 1, usu));
@@ -168,7 +165,6 @@ public class UsuarioController {
                 personaDto.setRazSoc(personaCliente.getPersonaRazonSocial());
                 personaDto.setDocE(new Cont(personaRep.findDocEmpByPersonaIdAct(personaCliente.getIdPersonaCliente())));
                 personaDto.setDireccion(new DireccionReq(direccionRepository.findDirPDV(personaCliente.getIdPersonaCliente())));
-                personaDto.setBanco(new BancoReq(personaRep.findBancById(personaCliente.getIdPersonaCliente())));
             }
             usuarioUp.setPersonaCliente(personaDto);
 

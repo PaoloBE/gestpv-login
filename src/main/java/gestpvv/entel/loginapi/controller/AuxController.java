@@ -6,6 +6,7 @@ import gestpvv.entel.loginapi.repository.DireccionRepository;
 import gestpvv.entel.loginapi.repository.GestorRepository;
 import gestpvv.entel.loginapi.repository.PersonaClienteRepository;
 import gestpvv.entel.loginapi.repository.UsuarioRepository;
+import gestpvv.entel.loginapi.repository.dtos.UsuariosSuperDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,5 +73,32 @@ public class AuxController {
             lGest.add(new TipoDTO(t.getIdTipoGestor(), t.getTipoGestorDesc()));
         });
         return new TiposAuxDTO(lDocs, lUsrs, lPerm, lTelf, lGest);
+    }
+
+    @GetMapping("/super/{desc}")
+    public  List<UsuariosSuperDTO> supervisoresDisp(@PathVariable String desc){
+        String criteria = "";
+        switch (desc) {
+            case "Socio":
+                criteria = "KAM";
+                break;
+            case "Supervisor":
+                criteria = "Socio";
+                break;
+            case "Gestor":
+                criteria = "Supervisor";
+                break;
+            case "PDV":
+            case "PDVX":
+                criteria = "Gestor";
+                break;
+            case "Lider":
+            case "Itinerante":
+                criteria = "PDV%";
+                break;
+            default:
+                criteria = "";
+        }
+        return usuarioRepository.findUsuariosByCriteria(criteria);
     }
 }

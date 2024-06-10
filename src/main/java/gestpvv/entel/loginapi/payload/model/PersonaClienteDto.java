@@ -27,5 +27,4 @@ public class PersonaClienteDto {
     private DireccionReq direccion;
     private String correo;
     private String contraseña;
-    private BancoReq banco;
 }

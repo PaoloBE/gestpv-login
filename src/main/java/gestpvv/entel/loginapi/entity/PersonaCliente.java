@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
@@ -77,9 +76,6 @@ public class PersonaCliente {
 
     @OneToMany(mappedBy = "idpersonaCliente")
     private Set<Usuario> idpersonaClienteUsuarios;
-
-    @OneToMany(mappedBy = "personaCliente")
-    private Set<Banco> bancos;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tipo_punto_venta_id_tipo_punto_venta", referencedColumnName = "id_tipo_persona")

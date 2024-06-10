@@ -20,4 +20,5 @@ public class UsuarioOperationDTO {
     private String usuarioDesc;
     private TipoUsuarioDTO tipoUsuario;
     private PersonaClienteDto personaCliente;
+    private String padres;
 }
