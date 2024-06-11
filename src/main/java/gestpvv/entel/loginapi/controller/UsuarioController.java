@@ -143,7 +143,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/list/{id}")
-    public UsuarioOperationDTO listaUnUsuario(@PathVariable Integer id) {
+    public UsuarioOperationDTO listaUnUsuario(@PathVariable Integer id) throws Exception {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
         if (usuario.isPresent()) {
             TipoUsuario type = usuario.get().getIdtipoUsuario();
@@ -167,7 +167,11 @@ public class UsuarioController {
                 personaDto.setDireccion(new DireccionReq(direccionRepository.findDirPDV(personaCliente.getIdPersonaCliente())));
             }
             usuarioUp.setPersonaCliente(personaDto);
-
+            usuarioUp.setPadres(usuario.get().getUsuarioPadres());
+            if (usuarioUp.getPadres() != null) {
+                String[] listaPadres = usuarioUp.getPadres().split(",");
+                usuarioUp.setPadresList(usuarioRepository.findUsuariosInList(listaPadres));
+            }
             return usuarioUp;
         } else {
             return new UsuarioOperationDTO();

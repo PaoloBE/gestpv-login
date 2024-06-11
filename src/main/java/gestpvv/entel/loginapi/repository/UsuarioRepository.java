@@ -46,6 +46,29 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("SELECT u.usuarioDesc FROM Usuario u WHERE u.idtipoUsuario.tipoUsuarioDesc = :desc")
     Optional<String> findLastOfTipoUsuario(@Param("desc") String desc);
 
-    @Query("SELECT uc.usuario.idUsuario as idU, uc.celularNumeroDesc as doc, CONCAT(uc.usuario.idpersonaCliente.personaNombres,' ',uc.usuario.idpersonaCliente.personaPrimerApellido,' ',uc.usuario.idpersonaCliente.personaSegundoApellido) as nombre, uc.usuario.idtipoUsuario.tipoUsuarioDesc as tipo FROM UsuarioCelular uc WHERE uc.usuario.idtipoUsuario.tipoUsuarioDesc LIKE :desc")
+    @Query(value = "SELECT u.id_usuario as idU, CONCAT(persona_nombres,' ',persona_primer_apellido,' ',persona_segundo_apellido) as nombre \n" +
+            ", d.documento_desc as doc, tu.tipo_usuario_desc as tipo FROM Admin.usuario u \n" +
+            "inner join Admin.persona_cliente p on u.persona_cliente_id_persona_cliente = p.id_persona_cliente \n" +
+            "inner join Admin.tipo_usuario tu on u.tipo_usuario_id_tipo_usuario = tu.id_tipo_usuario \n" +
+            "inner join Admin.documento d on d.persona_cliente_id_persona_cliente = p.id_persona_cliente \n" +
+            "where tu.tipo_usuario_desc like :desc ;", nativeQuery = true)
     List<UsuariosSuperDTO> findUsuariosByCriteria(@Param("desc") String desc);
+
+    @Query(value = "SELECT u.id_usuario as idU, CONCAT(persona_nombres,' ',persona_primer_apellido,' ',persona_segundo_apellido) as nombre \n" +
+            ", d.documento_desc as doc, tu.tipo_usuario_desc as tipo FROM Admin.usuario u \n" +
+            "inner join Admin.persona_cliente p on u.persona_cliente_id_persona_cliente = p.id_persona_cliente \n" +
+            "inner join Admin.tipo_usuario tu on u.tipo_usuario_id_tipo_usuario = tu.id_tipo_usuario \n" +
+            "inner join Admin.documento d on d.persona_cliente_id_persona_cliente = p.id_persona_cliente \n" +
+            "inner join Admin.tipo_documento_identidad td on d.tipo_documento_id_tipo_documento = td.id_tipo_documento \n" +
+            "where  usuario_padres rlike CONCAT('(^|,)',:regex,'($|,)') and td.tipo_documento_desc != 'RUC'" , nativeQuery = true)
+    List<UsuariosSuperDTO> findUsuariosByIdPadre(@Param("regex") String regex);
+
+    @Query(value = "SELECT u.id_usuario as idU, CONCAT(persona_nombres,' ',persona_primer_apellido,' ',persona_segundo_apellido) as nombre \n" +
+            ", d.documento_desc as doc, tu.tipo_usuario_desc as tipo FROM Admin.usuario u \n" +
+            "inner join Admin.persona_cliente p on u.persona_cliente_id_persona_cliente = p.id_persona_cliente \n" +
+            "inner join Admin.tipo_usuario tu on u.tipo_usuario_id_tipo_usuario = tu.id_tipo_usuario \n" +
+            "inner join Admin.documento d on d.persona_cliente_id_persona_cliente = p.id_persona_cliente \n" +
+            "where id_usuario in (:list) ", nativeQuery = true)
+    List<UsuariosSuperDTO> findUsuariosInList(@Param("list") String[] list);
+
 }

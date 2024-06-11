@@ -1,5 +1,6 @@
 package gestpvv.entel.loginapi.payload.DTO;
 
+import gestpvv.entel.loginapi.repository.dtos.UsuariosSuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,5 @@ public class UsuarioDTO {
     private TipoDTO celular;
     private TipoDTO correo;
     private TipoDTO permiso;
+    private UsuariosSuperDTO usuariosSuperDTO;
 }
