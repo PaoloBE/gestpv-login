@@ -58,6 +58,7 @@ public class UsuarioController {
         boolean kam = request.getTipo().equalsIgnoreCase("KAM");
         boolean pdv = request.getTipo().equalsIgnoreCase("PDV");
         String nameU = TipoUsuarioName.valueOf(request.getTipoUsuario().getDesc()).getCode();
+        usuarioRepository.findLastOfTipoUsuario(request.getTipoUsuario().getDesc());
         Optional<String> nameL = usuarioRepository.findLastOfTipoUsuario(request.getTipoUsuario().getDesc());
         String nameF = "";
         nameF = nameL.map(s -> nameU + String.format("%04d", Integer.parseInt(s.replaceAll("[^\\d.]", "")) + 1)).orElseGet(() -> nameU + "0001");

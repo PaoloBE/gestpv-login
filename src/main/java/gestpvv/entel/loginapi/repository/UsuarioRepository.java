@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+
     Optional<Usuario> findByIdpersonaClienteIdPersonaCliente(Integer idPersonaCliente);
 
     @Query("SELECT c.contrasenaDescEncrypt FROM UsuarioContrasena c where c.usuario.idUsuario = :idUsuario and contrasenaEstado = 1")
@@ -43,7 +44,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("SELECT tp FROM TipoPermiso tp WHERE tipoPermisoEstado = 1")
     List<TipoPermiso> findTipoPermAct();
 
-    @Query("SELECT u.usuarioDesc FROM Usuario u WHERE u.idtipoUsuario.tipoUsuarioDesc = :desc")
+    @Query(value = "SELECT usuario_desc FROM Admin.usuario u INNER JOIN Admin.tipo_usuario tu on u.tipo_usuario_id_tipo_usuario = tu.id_tipo_usuario \n" +
+            "where tu.tipo_usuario_desc= :desc ORDER BY u.usuario_desc DESC LIMIT 1", nativeQuery = true)
     Optional<String> findLastOfTipoUsuario(@Param("desc") String desc);
 
     @Query(value = "SELECT u.id_usuario as idU, CONCAT(persona_nombres,' ',persona_primer_apellido,' ',persona_segundo_apellido) as nombre \n" +
