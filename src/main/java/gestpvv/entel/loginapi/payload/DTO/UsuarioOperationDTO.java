@@ -18,7 +18,13 @@ public class UsuarioOperationDTO {
         this.usuarioDesc = usuarioDesc;
         this.tipoUsuario = tipoUsuario;
     }
-
+    public UsuarioOperationDTO(Integer id, String tipo, String usuarioDesc, TipoUsuarioDTO tipoUsuario) {
+        this.id = id;
+        this.tipo = tipo;
+        this.usuarioDesc = usuarioDesc;
+        this.tipoUsuario = tipoUsuario;
+    }
+    private Integer id;
     private String tipo;
     private String usuarioDesc;
     private TipoUsuarioDTO tipoUsuario;

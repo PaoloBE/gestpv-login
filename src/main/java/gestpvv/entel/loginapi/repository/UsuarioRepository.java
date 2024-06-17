@@ -1,6 +1,7 @@
 package gestpvv.entel.loginapi.repository;
 
 import gestpvv.entel.loginapi.entity.*;
+import gestpvv.entel.loginapi.repository.dtos.UsuarioListJPA;
 import gestpvv.entel.loginapi.repository.dtos.UsuariosSuperDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,13 +31,23 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("SELECT u FROM Usuario u WHERE idUsuario = :id")
     Optional<Usuario> findById(@Param("id") Integer id);
 
+    @Query(value = "SELECT * FROM Admin.usuario WHERE id_usuario = :id", nativeQuery = true)
+    Optional<Usuario> findNativeById(@Param("id") Integer id);
+
     @Modifying(flushAutomatically = true)
     @Transactional
     @Query("update Usuario u set u.usuarioEstado = :estado where u.idUsuario= :id")
     void updateUserState(Integer id, String estado);
 
-    @Query("SELECT t FROM TipoDocumentoIdentidad t WHERE tipoDocumentoEstado = '1'")
-    List<TipoDocumentoIdentidad> findTiposDocsAct();
+    @org.springframework.transaction.annotation.Transactional
+    @Modifying
+    @Query(value = "update Admin.usuario_celular set celular_numero_desc = :desc where usuario_id_usuario= :id", nativeQuery = true)
+    void updateUserCell(Integer id, String desc);
+
+    @org.springframework.transaction.annotation.Transactional
+    @Modifying
+    @Query(value = "update Admin.usuario_correo set correo_desc = :desc where usuario_id_usuario= :id", nativeQuery = true)
+    void updateUserCorreo(Integer id, String desc);
 
     @Query("SELECT t FROM TipoUsuario t WHERE tipoUsuarioEstado = 1")
     List<TipoUsuario> findTiposUsuarioAct();
@@ -73,4 +84,20 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
             "where id_usuario in (:list) ", nativeQuery = true)
     List<UsuariosSuperDTO> findUsuariosInList(@Param("list") String[] list);
 
+    @Query(value = "SELECT u.usuario_estado as est, u.id_usuario as idU, persona_nombres as nombres,  CONCAT(persona_primer_apellido,' ',persona_segundo_apellido) as apellidos \n" +
+            "           , d.documento_desc as doc, tdp.tipo_documento_desc as tipoDoc, tu.tipo_usuario_desc as tipo, \n" +
+            "           uc.celular_numero_desc as cel, uco.correo_desc as correo  FROM Admin.usuario u \n" +
+            "           inner join Admin.persona_cliente p on u.persona_cliente_id_persona_cliente = p.id_persona_cliente \n" +
+            "           inner join Admin.tipo_usuario tu on u.tipo_usuario_id_tipo_usuario = tu.id_tipo_usuario \n" +
+            "           inner join Admin.documento d on d.persona_cliente_id_persona_cliente = p.id_persona_cliente\n" +
+            "           inner join Admin.tipo_documento_identidad tdp on d.tipo_documento_id_tipo_documento = tdp.id_tipo_documento\n" +
+            "           inner join Admin.usuario_celular uc on u.id_usuario = uc.usuario_id_usuario\n" +
+            "           inner join Admin.usuario_correo uco on u.id_usuario = uco.usuario_id_usuario\n" +
+            "           where uc.celular_estado = 1 AND uco.correo_estado = 1 AND tdp.tipo_documento_desc != 'RUC'\n" +
+            "           LIMIT :min,:max", nativeQuery = true)
+    List<UsuarioListJPA> findUsuariosOffset(@Param("min") Integer min, @Param("max") Integer max);
+
+    @Query(value = "SELECT COUNT(*) FROM Admin.usuario", nativeQuery = true)
+    Integer findAmountUsuarios();
 }
+

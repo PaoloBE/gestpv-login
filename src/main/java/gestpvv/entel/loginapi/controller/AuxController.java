@@ -2,10 +2,7 @@ package gestpvv.entel.loginapi.controller;
 
 import gestpvv.entel.loginapi.payload.DTO.TipoDTO;
 import gestpvv.entel.loginapi.payload.DTO.TiposAuxDTO;
-import gestpvv.entel.loginapi.repository.DireccionRepository;
-import gestpvv.entel.loginapi.repository.GestorRepository;
-import gestpvv.entel.loginapi.repository.PersonaClienteRepository;
-import gestpvv.entel.loginapi.repository.UsuarioRepository;
+import gestpvv.entel.loginapi.repository.*;
 import gestpvv.entel.loginapi.repository.dtos.UsuariosSuperDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +16,9 @@ public class AuxController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private DocumentoRepository documentoRepository;
 
     @Autowired
     private PersonaClienteRepository personaClienteRepository;
@@ -44,7 +44,7 @@ public class AuxController {
     @GetMapping("/tiposDoc")
     public List<TipoDTO> listaTipoDoc(){
         List<TipoDTO> listaTipos = new ArrayList<>();
-        usuarioRepository.findTiposDocsAct().forEach(t -> {
+        documentoRepository.findTiposDocsAct().forEach(t -> {
             listaTipos.add(new TipoDTO(t.getIdTipoDocumento(), t.getTipoDocumentoDesc()));
         });
         return listaTipos;
@@ -53,7 +53,7 @@ public class AuxController {
     @GetMapping("/tipos")
     public  TiposAuxDTO listaTipos(){
         List<TipoDTO> lDocs = new ArrayList<>();
-        usuarioRepository.findTiposDocsAct().forEach(t -> {
+        documentoRepository.findTiposDocsAct().forEach(t -> {
             lDocs.add(new TipoDTO(t.getIdTipoDocumento(), t.getTipoDocumentoDesc()));
         });
         List<TipoDTO> lUsrs = new ArrayList<>();
@@ -76,7 +76,7 @@ public class AuxController {
     }
 
     @GetMapping("/super/{desc}")
-    public  List<UsuariosSuperDTO> supervisoresDisp(@PathVariable String desc){
+    public List<UsuariosSuperDTO> supervisoresDisp(@PathVariable String desc){
         String criteria = "";
         switch (desc) {
             case "Socio":
@@ -100,5 +100,10 @@ public class AuxController {
                 criteria = "";
         }
         return usuarioRepository.findUsuariosByCriteria(criteria);
+    }
+
+    @GetMapping("/amount/usuarios")
+    public Integer usuariosAmount(){
+        return usuarioRepository.findAmountUsuarios();
     }
 }

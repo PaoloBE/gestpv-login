@@ -2,6 +2,7 @@ package gestpvv.entel.loginapi.repository;
 
 import gestpvv.entel.loginapi.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -51,4 +52,7 @@ public interface PersonaClienteRepository extends JpaRepository<PersonaCliente, 
     @Query("SELECT d.emailDesc FROM Email d where d.personaClienteIdpersonaCliente.idPersonaCliente = :id AND emailEstado = 1")
     String findEmailDescByPersonaIdAct(@Param("id") Integer id);
 
+    @Query(value = "UPDATE Admin.persona_cliente SET tipo_gestor_id_tipo_gestor = :id", nativeQuery = true)
+    @Modifying
+    void updateGestorType(@Param("id") Integer id);
 }

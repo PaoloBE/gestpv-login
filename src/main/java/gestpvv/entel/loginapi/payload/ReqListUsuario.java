@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ResUsuarioRegister {
-    private String estado;
-    private String descrip;
+public class ReqListUsuario {
+    private Integer min;
+    private Integer max;
 }

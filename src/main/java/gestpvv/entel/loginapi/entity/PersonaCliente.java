@@ -78,11 +78,11 @@ public class PersonaCliente {
     private Set<Usuario> idpersonaClienteUsuarios;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tipo_punto_venta_id_tipo_punto_venta", referencedColumnName = "id_tipo_persona")
+    @JoinColumn(name = "tipo_persona_id_tipo_persona", referencedColumnName = "id_tipo_persona")
     private TipoPersona tipoPersona;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tipo_persona_id_tipo_persona", referencedColumnName = "id_tipo_punto_venta")
+    @JoinColumn(name = "tipo_punto_venta_id_tipo_punto_venta", referencedColumnName = "id_tipo_punto_venta")
     private TipoPuntoVenta tipoPuntoVenta;
 
     @ManyToOne(fetch = FetchType.LAZY)

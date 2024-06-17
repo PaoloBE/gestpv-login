@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum TipoUsuarioName {
-    Admin("A"),KAM("K"),Socio("S"),Gestor("G"),PDV("P"),PDVX("PX"),Vendedor("V"),Suprevisor("SP"),Lider("L"), Itinerante("I");
+    Admin("A"),KAM("K"),Socio("S"),Gestor("G"),PDV("P"),PDVX("PX"),Vendedor("V"),Supervisor("SP"),Lider("L"), Itinerante("I");
 
     private String code;
 
