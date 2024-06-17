@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
-@Table(name = "tipo_persona", schema = "Admin")
+@Table(name = "tipo_persona")
 public class TipoPersona {
     @Id
     @Column(nullable = false, updatable = false, name = "id_tipo_persona")

@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "tipo_telefono", schema = "Admin")
+@Table(name = "tipo_telefono")
 public class TipoTelefono {
 
     @Id

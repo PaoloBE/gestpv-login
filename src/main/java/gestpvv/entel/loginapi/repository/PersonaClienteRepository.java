@@ -52,7 +52,7 @@ public interface PersonaClienteRepository extends JpaRepository<PersonaCliente, 
     @Query("SELECT d.emailDesc FROM Email d where d.personaClienteIdpersonaCliente.idPersonaCliente = :id AND emailEstado = 1")
     String findEmailDescByPersonaIdAct(@Param("id") Integer id);
 
-    @Query(value = "UPDATE Admin.persona_cliente SET tipo_gestor_id_tipo_gestor = :id", nativeQuery = true)
+    @Query(value = "UPDATE Admin2.persona_cliente SET tipo_gestor_id_tipo_gestor = :id", nativeQuery = true)
     @Modifying
     void updateGestorType(@Param("id") Integer id);
 }

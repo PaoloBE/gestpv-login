@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "direccion", schema = "Admin")
+@Table(name = "direccion")
 public class Direccion {
 
     public Direccion(String desc, Integer estado, PersonaCliente personaCliente) {

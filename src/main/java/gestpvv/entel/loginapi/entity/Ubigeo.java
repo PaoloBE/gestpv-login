@@ -9,7 +9,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "ubigeo", schema = "Admin")
+@Table(name = "ubigeo")
 public class Ubigeo {
 
     @Id

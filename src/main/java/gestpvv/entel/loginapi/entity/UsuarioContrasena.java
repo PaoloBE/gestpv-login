@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "usuario_contrasena", schema = "Admin")
+@Table(name = "usuario_contrasena")
 public class UsuarioContrasena {
 
     public UsuarioContrasena(String contrasenaDesc, String contrasenaDescEncrypt, Integer contrasenaEstado, Usuario usuario) {

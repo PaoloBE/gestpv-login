@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "usuario", schema = "Admin")
+@Table(name = "usuario")
 public class Usuario {
 
     public Usuario(String desc, String estado, String padres, PersonaCliente persona, TipoPermiso permiso, TipoUsuario usuario){

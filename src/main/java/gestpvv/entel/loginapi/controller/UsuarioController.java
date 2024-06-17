@@ -136,13 +136,11 @@ public class UsuarioController {
         PersonaClienteDto perDTO = request.getPersonaCliente();
         PersonaCliente per = new PersonaCliente(perDTO.getNombres(), perDTO.getPriApe(), perDTO.getSecApe(), "",1);
         DireccionReq dirReq = perDTO.getDireccion();
-        String concat = dirReq.getUbigeo().getConcat();
         personaRep.saveAndFlush(per);
-        direccionRepository.insertDireccionBulk(per.getIdPersonaCliente(), perDTO.getDireccion().getDesc(),
-                concat.split("-")[0],concat.split("-")[1],concat.split("-")[2], dirReq.getCity());
+        direccionRepository.insertDireccionBulkVend(per.getIdPersonaCliente(), perDTO.getDireccion().getDesc());
         documentoRepository.insertDocumentoBulk(per.getIdPersonaCliente(), perDTO.getDoc().getDesc(), perDTO.getDoc().getTipo());
         telefonoRepository.insertDireccionBulk(per.getIdPersonaCliente(), perDTO.getTel());
-        Usuario usu = usuarioRepository.saveAndFlush(new Usuario(request.getUsuarioDesc(),"1", request.getPadres(), per, usuarioRepository.findTipPermDesc("TOTAL"), usuarioRepository.findTipUsuario(request.getTipoUsuario().getId())));
+        Usuario usu = usuarioRepository.saveAndFlush(new Usuario(request.getUsuarioDesc(),"1", String.valueOf(usuarioRepository.findIdUsuarioByDocument(request.getPadres())), per, usuarioRepository.findTipPermDesc("TOTAL"), usuarioRepository.findTipUsuario(request.getTipoUsuario().getId())));
 
         uContraRep.save(new UsuarioContrasena("123456", "", 1, usu));
         uCorreoRep.save(new UsuarioCorreo(perDTO.getCorreo(), 1, usu));

@@ -19,9 +19,9 @@ public interface DocumentoRepository extends JpaRepository<Documento, Long> {
 
     @org.springframework.transaction.annotation.Transactional
     @Modifying
-    @Query(value = "INSERT INTO Admin.documento\n" +
+    @Query(value = "INSERT INTO Admin2.documento\n" +
             "(persona_cliente_id_persona_cliente,documento_desc,tipo_documento_id_tipo_documento,documento_estado,documento_fecha_creacion)\n" +
             "VALUES\n" +
-            "(:idPer, :desc, (SELECT id_tipo_documento FROM Admin.tipo_documento_identidad WHERE tipo_documento_desc=:tipo),1,NOW())", nativeQuery = true)
+            "(:idPer, :desc, (SELECT id_tipo_documento FROM Admin2.tipo_documento_identidad WHERE tipo_documento_desc=:tipo),1,NOW())", nativeQuery = true)
     void insertDocumentoBulk(@Param("idPer") Integer idPer, @Param("desc") String desc, @Param("tipo") String tipo);
 }

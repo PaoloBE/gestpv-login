@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "email", schema = "Admin")
+@Table(name = "email")
 public class Email {
 
     public Email(String desc, Integer estado, PersonaCliente personaCliente) {

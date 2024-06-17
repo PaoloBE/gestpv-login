@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "token", schema = "Admin")
+@Table(name = "token")
 public class Token {
 
     @Id

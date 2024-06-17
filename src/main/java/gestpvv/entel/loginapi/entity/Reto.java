@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
-@Table(name = "reto", schema = "Admin")
+@Table(name = "reto")
 public class Reto {
 
     @Id

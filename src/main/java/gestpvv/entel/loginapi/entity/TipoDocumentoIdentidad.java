@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "tipo_documento_identidad", schema = "Admin")
+@Table(name = "tipo_documento_identidad")
 public class TipoDocumentoIdentidad {
 
     @Id
