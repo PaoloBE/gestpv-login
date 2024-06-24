@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import gestpvv.entel.loginapi.enums.TipoUsuarioName;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +51,8 @@ public class UsuarioController {
     private GestorRepository gestorRepository;
     @Autowired
     private UbigeoRepository ubigeoRepository;
+    @Autowired
+    private AgrupacionRepository agrupacionRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -99,7 +102,7 @@ public class UsuarioController {
         if (usuario.isEmpty()) {
             String permiso = request.getTipoUsuario().getDesc().equalsIgnoreCase("ADMIN") ? "TOTAL" : "LECTURA" ;
             Usuario usu = usuarioRepository.saveAndFlush(new Usuario(request.getUsuarioDesc(),"1", request.getPadres(), per, usuarioRepository.findTipPermDesc(permiso), usuarioRepository.findTipUsuario(request.getTipoUsuario().getId())));
-            String contra = request.getPersonaCliente().getDoc().getDesc();
+            String contra = "123456";
             uContraRep.save(new UsuarioContrasena(contra, passwordEncoder.encode(contra), 1, usu));
             uCorreoRep.save(new UsuarioCorreo(perReq.getCorreo(), 1, usu));
             uCelulrRep.save(new UsuarioCelular(perReq.getTel(), 1, usu));
@@ -158,6 +161,14 @@ public class UsuarioController {
             System.out.println("PRESENTE");
             Usuario usuario = opUsuario.get();
             usuario.setUsuarioPadres(request.getPadres());
+            agrupacionRepository.disableAllById(request.getId());
+            if (!request.getPadres().isEmpty()) {
+                String[] listaPadres = request.getPadres().contains(",") ? request.getPadres().split(",") : new String[]{request.getPadres()};
+                for (String listaPadre : listaPadres) {
+                    agrupacionRepository.insertAgrupacion(request.getId(),Integer.parseInt(listaPadre),1);
+                    agrupacionRepository.insertAgrupacion(request.getId(),Integer.parseInt(listaPadre),2);
+                }
+            }
             PersonaCliente persona = usuario.getIdpersonaCliente();
             persona.setPersonaNombres(request.getPersonaCliente().getNombres());
             persona.setPersonaNacimiento(request.getPersonaCliente().getNacimiento());
@@ -173,7 +184,11 @@ public class UsuarioController {
                 direc.setUbigeo(ubigeoRepository.findByDepProDist(direcReq.getUbigeo().getConcat().split("-")[0],direcReq.getUbigeo().getConcat().split("-")[1],direcReq.getUbigeo().getConcat().split("-")[2]));
                 direccionRepository.saveAndFlush(direc);
                 Documento doc = documentoRepository.findDocumentBussiness(persona.getIdPersonaCliente());
-                doc.setDocumentoDesc(request.getPersonaCliente().getDocE().getDesc());
+                if (doc != null) {
+                    doc.setDocumentoDesc(request.getPersonaCliente().getDocE().getDesc());
+                } else {
+                    doc = new Documento(request.getPersonaCliente().getDocE().getDesc(),1,personaRep.findTipoDocByDesc(request.getPersonaCliente().getDoc().getTipo()),persona);
+                }
                 documentoRepository.saveAndFlush(doc);
             }
             usuarioRepository.saveAndFlush(usuario);
@@ -222,14 +237,19 @@ public class UsuarioController {
             }
             if (typeResp.equalsIgnoreCase("PDV")) {
                 personaDto.setRazSoc(personaCliente.getPersonaRazonSocial());
-                personaDto.setDocE(new Cont(personaRep.findDocEmpByPersonaIdAct(personaCliente.getIdPersonaCliente())));
+                try {
+                    personaDto.setDocE(new Cont(personaRep.findDocEmpByPersonaIdAct(personaCliente.getIdPersonaCliente())));
+                } catch (Exception e) {
+                    personaDto.setDocE(new Cont());
+                }
                 personaDto.setDireccion(new DireccionReq(direccionRepository.findDirPDV(personaCliente.getIdPersonaCliente())));
             }
             usuarioUp.setPersonaCliente(personaDto);
-            usuarioUp.setPadres(usuario.get().getUsuarioPadres());
-            if (usuarioUp.getPadres() != null) {
-                String[] listaPadres = usuarioUp.getPadres().split(",");
-                usuarioUp.setPadresList(usuarioRepository.findUsuariosInList(listaPadres));
+            Integer[] listaAgrup = agrupacionRepository.findAgrupacionesByHijos(id);
+            System.out.println(JSONUtil.toJSON(listaAgrup));
+            usuarioUp.setPadres(Arrays.toString(listaAgrup).replace("[","").replace("]",""));
+            if (listaAgrup.length != 0) {
+                usuarioUp.setPadresList(usuarioRepository.findUsuariosInList(listaAgrup));
             }
             return usuarioUp;
         } else {

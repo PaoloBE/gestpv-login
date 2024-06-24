@@ -23,13 +23,13 @@ public class TipoDocumentoIdentidad {
     private String tipoDocumentoDesc;
 
     @Column(length = 45, name = "tipo_documento_estado")
-    private String tipoDocumentoEstado;
+    private Integer tipoDocumentoEstado;
 
     @Column(name = "tipo_documento_fecha_creacion")
     private OffsetDateTime tipoDocumentoFechaCreacion;
 
     @Column(length = 45, name = "tipo_documento_fecha_modifica")
-    private String tipoDocumentoFechaModifica;
+    private OffsetDateTime tipoDocumentoFechaModifica;
 
     @OneToMany(mappedBy = "documentoTipoDocumento")
     private Set<Documento> documentoTipoDocumentoDocumentoes;

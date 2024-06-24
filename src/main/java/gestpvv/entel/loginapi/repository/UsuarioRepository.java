@@ -82,7 +82,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
             "inner join Admin2.tipo_usuario tu on u.tipo_usuario_id_tipo_usuario = tu.id_tipo_usuario \n" +
             "inner join Admin2.documento d on d.persona_cliente_id_persona_cliente = p.id_persona_cliente \n" +
             "where id_usuario in (:list) ", nativeQuery = true)
-    List<UsuariosSuperDTO> findUsuariosInList(@Param("list") String[] list);
+    List<UsuariosSuperDTO> findUsuariosInList(@Param("list") Integer[] list);
 
     @Query(value = "SELECT u.usuario_estado as est, u.id_usuario as idU, persona_nombres as nombres,  CONCAT(persona_primer_apellido,' ',persona_segundo_apellido) as apellidos \n" +
             "           , d.documento_desc as doc, tdp.tipo_documento_desc as tipoDoc, tu.tipo_usuario_desc as tipo, \n" +

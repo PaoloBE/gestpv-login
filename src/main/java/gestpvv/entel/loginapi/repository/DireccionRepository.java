@@ -1,7 +1,6 @@
 package gestpvv.entel.loginapi.repository;
 
 import gestpvv.entel.loginapi.entity.Direccion;
-import gestpvv.entel.loginapi.entity.Ubigeo;
 import gestpvv.entel.loginapi.repository.dtos.DireccionJPA;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

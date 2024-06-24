@@ -14,7 +14,7 @@ public interface DocumentoRepository extends JpaRepository<Documento, Long> {
     @Query("SELECT d FROM Documento d WHERE d.documentoTipoDocumento.tipoDocumentoDesc = 'RUC' AND d.personaCliente.idPersonaCliente = :id")
     Documento findDocumentBussiness(@Param("id") Integer id);
     
-    @Query("SELECT t FROM TipoDocumentoIdentidad t WHERE tipoDocumentoEstado = '1'")
+    @Query("SELECT t FROM TipoDocumentoIdentidad t WHERE tipoDocumentoEstado = 1")
     List<TipoDocumentoIdentidad> findTiposDocsAct();
 
     @org.springframework.transaction.annotation.Transactional
